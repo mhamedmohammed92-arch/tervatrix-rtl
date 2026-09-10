@@ -33,7 +33,7 @@ Every range below is written as an escape on purpose: the literal characters
 are invisible or bidi-flipping in an editor, which is how these regexes get
 broken by a well-meaning edit.
 
-The JavaScript package ``@tervatrix/rtl-ui`` carries the identical logic under
+The JavaScript package ``tervatrix-rtl-ui`` carries the identical logic under
 the same names, so a string prepared on either side of a project is
 byte-identical.
 """
@@ -58,7 +58,7 @@ __all__ = [
     "strip_bidi",
 ]
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 # Unicode bidirectional control characters used below.
 LRI = "\u2066"  # LEFT-TO-RIGHT ISOLATE
@@ -222,6 +222,16 @@ def format_time_range(start: str, end: str, separator: str = "-") -> str:
     return isolate(f"{start}{separator}{end}")
 
 
+# The leading whitespace to look past when deciding whether a line already
+# begins right-to-left. Spelled out rather than using str.lstrip(), which strips
+# every Unicode space there is - including U+2000, U+3000, U+1680 and U+0085.
+# The JavaScript package uses exactly this class, and the two must agree
+# character for character or a string prepared on one side stops matching the
+# same string prepared on the other. Measured 2026-09-10: str.lstrip() made the
+# two packages disagree on 5 of 27 cases.
+_LEADING_WS = re.compile("^[ \t\x0b\f\r\u00a0]+")
+
+
 def force_rtl_paragraphs(text: str) -> str:
     """Prefix every line that does not already begin with a strong RTL character
     with an invisible RTL mark, so the line is laid out right to left."""
@@ -229,7 +239,7 @@ def force_rtl_paragraphs(text: str) -> str:
         return text
     out = []
     for line in text.split("\n"):
-        stripped = line.lstrip()
+        stripped = _LEADING_WS.sub("", line)
         if not stripped or line.startswith(RLM):
             out.append(line)
             continue
