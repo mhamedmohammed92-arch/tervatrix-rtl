@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.1 (unreleased)
+## 1.0.1 - 2026-09-24
 
 A correctness fix in `force_rtl_paragraphs()`, and the parity claim turned into
 a check.

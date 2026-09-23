@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tervatrix-rtl"
-version = "1.0.0"
+version = "1.0.1"
 description = "Correct right-to-left text for Hebrew and Arabic: LTR isolates for numbers, URLs and time ranges, and the RLM line-start fix. No dependencies."
 readme = "README.md"
 license = { text = "MIT" }
