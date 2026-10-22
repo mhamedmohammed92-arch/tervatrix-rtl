@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased - 2026-10-22
+
+Documentation only: two bidi examples were wrong. Rendered in Chrome inside an
+RTL Hebrew paragraph (2026-10-22): `+972-4-000-0000` shows as `972-4-000-0000+`
+(only the plus moves - one hyphen between digits keeps a single number run),
+`+972 4 000 0000` shows as `0000 000 4 972+`, and the opening hours
+`09:00 - 18:00` / `09:00–18:00` show as `18:00 - 09:00` while a bare
+`09:00-18:00` stays in order. The README table, the module docstring and the
+comments now say exactly that. Behaviour is unchanged: `prepare_outbound()`
+isolates every one of these forms, and each renders in order afterwards.
+
 ## 1.0.1 - 2026-09-24
 
 A correctness fix in `force_rtl_paragraphs()`, and the parity claim turned into

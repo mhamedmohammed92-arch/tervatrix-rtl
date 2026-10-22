@@ -5,15 +5,16 @@ are invisible in review because they only appear once real data lands in the
 layout:
 
 1. A phone number, price range, URL or order id inside an RTL sentence renders
-   with its segments in the wrong order, because the dashes, dots and slashes
-   between digits are *neutral* characters and inherit the paragraph's
+   in the wrong order, because the plus sign, spaces, dots and slashes around
+   the digits are *neutral* characters and inherit the paragraph's
    right-to-left direction. ``+972-52-624-7316`` can display as
-   ``7316-624-52-972+``.
+   ``972-52-624-7316+`` (the plus jumps to the end) and ``+972 52 624 7316``
+   as ``7316 624 52 972+``.
    Fix: wrap each such run in a LEFT-TO-RIGHT ISOLATE (U+2066 ... U+2069) so it
    is laid out left-to-right while staying in place inside the sentence.
 
-2. An opening-hours range like ``09:00-18:00`` is two number runs with a
-   neutral between them, so an RTL paragraph reorders it into ``18:00-09:00``
+2. An opening-hours range like ``09:00 - 18:00`` or ``09:00–18:00`` is two number
+   runs with a neutral between them, so an RTL paragraph reorders it into ``18:00 - 09:00``
    and shows the closing time first. Fix: the pattern below treats a time range
    as ONE run, deliberately, by keeping the colon and the dashes inside the
    separator class.
@@ -103,9 +104,10 @@ _ISOLATED_SPAN = re.compile("\u2066[^\u2069]*\u2069")
 #     \s also matches the newline. A run allowed to cross a line break would put
 #     the opening isolate on one line and the closing one on the next - and the
 #     RTL mark below is applied line by line, so the pair would never balance.
-#   * The colon and the en/em dash are in the class on purpose. "09:00-18:00" is
+#   * The colon and the en/em dash are in the class on purpose. "09:00 - 18:00" is
 #     the classic failure: two number runs with a neutral between them, which an
-#     RTL paragraph reorders into "18:00-09:00" and shows closing time first.
+#     RTL paragraph reorders into "18:00 - 09:00" and shows closing time first
+#     (a bare hyphen "09:00-18:00" happens to survive; it is one run all the same).
 #   * The comma is in the class so a thousands separator cannot split the run.
 #     Without it "1,250.00" isolates as "1," followed by an isolated "250.00",
 #     putting the isolate boundary in the middle of a number - which is worse

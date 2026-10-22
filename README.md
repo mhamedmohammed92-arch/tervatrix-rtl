@@ -9,8 +9,8 @@ layout:
 
 | what the user sees | why | the fix |
 |---|---|---|
-| `+972-4-000-0000` renders as `0000-000-4-972+` | the dashes are *neutral* characters and inherit the paragraph's RTL direction | `prepare_outbound()` wraps it in a left-to-right isolate |
-| opening hours `09:00-18:00` render as `18:00-09:00`, closing time first | two number runs with a neutral between them get reordered as a unit | the pattern treats a time range as **one** run |
+| `+972-4-000-0000` renders as `972-4-000-0000+` (the plus jumps to the end), and `+972 4 000 0000` renders as `0000 000 4 972+` | a leading `+` is a *neutral* character and takes the paragraph's RTL direction; spaces split the digits into separate number runs, which RTL lays out right to left (a single hyphen between digits keeps one run) | `prepare_outbound()` wraps it in a left-to-right isolate |
+| opening hours `09:00 - 18:00` or `09:00–18:00` (en dash) render as `18:00 - 09:00`, closing time first | two number runs with a neutral (a space, an en dash) between them are laid out right to left; a bare hyphen `09:00-18:00` happens to survive | the pattern treats a time range as **one** run |
 | a whole Hebrew line flips to left-aligned because it starts with `2026` or `WhatsApp` | the first-strong-character rule guesses the paragraph direction | an invisible right-to-left mark is prefixed to the line |
 | a prepared string no longer equals the string it came from | the marks are invisible but real characters | `strip_bidi()`, the exact inverse |
 

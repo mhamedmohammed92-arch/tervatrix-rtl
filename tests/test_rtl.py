@@ -105,8 +105,8 @@ class IsolateTest(unittest.TestCase):
         self.assertIn(LRI + "hello@example.com" + PDI, out)
 
     def test_time_range_is_one_run_not_two(self):
-        # The bug this guards: an RTL paragraph reorders "09:00-18:00" into
-        # "18:00-09:00" and shows the closing time first.
+        # The bug this guards: an RTL paragraph reorders "09:00 - 18:00" into
+        # "18:00 - 09:00" and shows the closing time first; every form is one run.
         out = isolate_ltr_runs(HEBREW + " 09:00-18:00")
         self.assertIn(LRI + "09:00-18:00" + PDI, out)
         self.assertEqual(out.count(LRI), 1)
